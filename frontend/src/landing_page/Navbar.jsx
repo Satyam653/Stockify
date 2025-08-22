@@ -29,7 +29,7 @@ export default function Navbar() {
           <form className="d-flex" role="search">
             <ul className="navbar-nav mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link active" aria-current="page" to="http://localhost:3000/">
+                <Link className="nav-link active" aria-current="page" to="https://stockify-nine-tau.vercel.app/">
                   DashBoard
                 </Link>
               </li>
