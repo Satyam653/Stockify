@@ -192,13 +192,14 @@ app.get("/allPositions",async(req,res) => {
 });
 
 app.post("/newOrder",async(req,res) => {
+  try{
   const { name, price, qty, mode } = req.body;
   let newOrder = new OrdersModel({
     name: req.body.name,
     price: req.body.price,
     qty: req.body.qty,
     mode: req.body.mode,
-  }); newOrder.save();
+  });await newOrder.save();
   
   if(mode === "BUY") {
     
@@ -216,6 +217,7 @@ app.post("/newOrder",async(req,res) => {
     net: `${pnl.toFixed(2)}%`,     
     day: `${day.toFixed(2)}%`,     
   });await newHolding.save();
+     return res.json({ message: "Buy order executed successfully!" });
   } 
   if (mode === "SELL") {
     let holding = await HoldingsModel.findOne({ name });
@@ -251,9 +253,12 @@ app.post("/newOrder",async(req,res) => {
         { _id: holding._id },
         { $set: { qty: updatedQty } }
       );
-    }
+    }return res.json({ message: "Sell order executed successfully!" });
+  }return res.status(400).json({ message: "Invalid order mode!" });
+}catch (err) {
+    console.error("❌ Error in /newOrder:", err);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  
 
   
   res.send("Order saved!");
