@@ -220,41 +220,44 @@ app.post("/newOrder",async(req,res) => {
      return res.json({ message: "Buy order executed successfully!" });
   } 
   if (mode === "SELL") {
-    let holding = await HoldingsModel.findOne({ name });
+  let holding = await HoldingsModel.findOne({ name });
 
-    if (!holding) {
-      return res.status(404).json({ message: "No such holding to sell!" });
-    }
+  if (!holding) {
+    return res.status(404).json({ message: "No such holding to sell!" });
+  }
 
-   
-    if (qty > holding.qty) {
-      return res
-        .status(400)
-        .json({ message: "Not enough quantity in holdings to sell!" });
-    }
+  // Ensure qty is number
+  const quantity = Number(qty);
+  const sellPrice = Number(price);
 
-    
-    const curValue = holding.price * holding.qty;
-    if (price > holding.currval) {
-      return res
-        .status(400)
-        .json({ message: "Sell price cannot be greater than current value!" });
-    }
+  // Rule 1: qty must not exceed holding
+  if (quantity > holding.qty) {
+    return res
+      .status(400)
+      .json({ message: "Not enough quantity in holdings to sell!" });
+  }
 
-   
-    const updatedQty = holding.qty - qty;
+  // Rule 2: sell price must be <= holding.price (avg buy price or latest ltp?)
+  if (sellPrice > holding.price) {
+    return res
+      .status(400)
+      .json({ message: "Sell price cannot be greater than current value!" });
+  }
 
-    if (updatedQty <= 0) {
-     
-      await HoldingsModel.deleteOne({ _id: holding._id });
-    } else {
-     
-      await HoldingsModel.updateOne(
-        { _id: holding._id },
-        { $set: { qty: updatedQty } }
-      );
-    }return res.json({ message: "Sell order executed successfully!" });
-  }return res.status(400).json({ message: "Invalid order mode!" });
+  // Update holdings
+  const updatedQty = holding.qty - quantity;
+
+  if (updatedQty <= 0) {
+    await HoldingsModel.deleteOne({ _id: holding._id });
+    return res.json({ message: "All holdings sold successfully!" });
+  } else {
+    await HoldingsModel.updateOne(
+      { _id: holding._id },
+      { $set: { qty: updatedQty } }
+    );
+    return res.json({ message: `Sold ${quantity} successfully! Remaining: ${updatedQty}` });
+  }
+}
 }catch (err) {
     console.error("❌ Error in /newOrder:", err);
     return res.status(500).json({ message: "Internal server error" });
