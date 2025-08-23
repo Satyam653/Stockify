@@ -14,7 +14,7 @@ const SellActionWindow = ({ uid }) => {
 
   const handleSellClick = async () => {
     try {
-      const res = await axios.post("http://localhost:3002/newOrder", {
+      const res = await axios.post("https://stockify-goml.onrender.com/newOrder", {
         name: uid,
         qty: stockQuantity,
         price: stockPrice,
