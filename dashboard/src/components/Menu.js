@@ -88,9 +88,11 @@ const Menu = () => {
           </li>
         </ul>
         <hr />
-        <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
+        
+       <div className="profile" onClick={handleProfileClick}>
+           <Link to = "https://stockify-b659.vercel.app/"><div className="avatar">ZU</div>
+          <p className="username">USERID</p></Link>
+          
         </div>
       </div>
     </div>
