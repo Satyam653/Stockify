@@ -90,7 +90,7 @@ const Menu = () => {
         <hr />
         
        <div className="profile" onClick={handleProfileClick}>
-           <Link to = "https://stockify-b659.vercel.app/"><div className="avatar">ZU</div>
+           <Link to = "https://stockify-b659.vercel.app/" style = {{ textDecoration: "none" }}><div className="avatar">ZU</div>
           <p className="username">USERID</p></Link>
           
         </div>
