@@ -217,7 +217,7 @@ app.post("/newOrder",async(req,res) => {
     net: `${pnl.toFixed(2)}%`,     
     day: `${day.toFixed(2)}%`,     
   });await newHolding.save();
-     res.redirect("/allHoldings");
+     
      return res.json({ message: "Buy order executed successfully!" });
      
   } 
